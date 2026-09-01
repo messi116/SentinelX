@@ -1,29 +1,33 @@
 # Python
 __pycache__/
 *.py[cod]
+*.pyo
+
+# Virtual environments
 .venv/
 venv/
-.env
+env/
 
-# Node
-node_modules/
-dist/
-build/
+# Environment variables
+.env
+.env.*
+!.env.example
 
 # IDE
 .vscode/
+.idea/
+
+# Node
+node_modules/
 
 # Logs
 *.log
 
-# Database
-*.sqlite
-*.db
-
-# Secrets
-secrets/
-credentials/
-
 # OS
 .DS_Store
 Thumbs.db
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
