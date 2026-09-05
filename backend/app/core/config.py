@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -11,8 +11,18 @@ class Settings(BaseSettings):
     API_HOST: str = "127.0.0.1"
     API_PORT: int = 8000
 
-    class Config:
-        env_file = ".env"
+    WAZUH_URL: str
+    WAZUH_USERNAME: str
+    WAZUH_PASSWORD: str
+
+    WAZUH_INDEXER_URL: str | None = None
+    WAZUH_INDEXER_USERNAME: str | None = None
+    WAZUH_INDEXER_PASSWORD: str | None = None
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="ignore",
+    )
 
 
 settings = Settings()
