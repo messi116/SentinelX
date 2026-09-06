@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.api.wazuh import router as wazuh_router
+from app.api.detection import router as detection_router
 
 app = FastAPI(
     title="SentinelX API",
@@ -9,6 +10,7 @@ app = FastAPI(
 )
 
 app.include_router(wazuh_router)
+app.include_router(detection_router)
 
 
 @app.get("/")
