@@ -287,4 +287,378 @@ EVENT
        ATTACK STORY
             |
             v
-     AI INVESTIGATION
+     AI INVESTIGATION 
+
+
+---
+
+# 14. User
+
+A User represents an authenticated SentinelX user or SOC analyst.
+
+Potential fields:
+
+* user_id
+* username
+* email
+* password_hash
+* role
+* is_active
+* created_at
+* updated_at
+* last_login
+
+Possible roles:
+
+* analyst
+* senior_analyst
+* administrator
+
+Security-sensitive authentication information must be stored securely.
+
+---
+
+# 15. Host
+
+A Host represents an endpoint or monitored system participating in the SentinelX security environment.
+
+Potential fields:
+
+* host_id
+* hostname
+* ip_address
+* operating_system
+* host_type
+* agent_id
+* environment
+* criticality
+* status
+* first_seen
+* last_seen
+
+Host criticality may contribute to contextual risk assessment.
+
+---
+
+# 16. Alert
+
+An Alert represents a security notification generated from a detection or telemetry source.
+
+Potential fields:
+
+* alert_id
+* event_id
+* finding_id
+* source
+* title
+* description
+* severity
+* status
+* confidence
+* created_at
+* acknowledged_at
+* resolved_at
+
+Possible alert states:
+
+* new
+* acknowledged
+* investigating
+* resolved
+* closed
+
+Alerts provide the analyst-facing representation of detected security activity.
+
+---
+
+# 17. Incident Event
+
+An Incident Event represents the relationship between an incident and an underlying security event.
+
+Potential fields:
+
+* incident_event_id
+* incident_id
+* event_id
+* relationship_type
+* relevance_score
+* added_at
+
+This entity allows an incident to contain multiple related events while preserving event-level traceability.
+
+---
+
+# 18. Risk Score
+
+A Risk Score represents a contextual risk value associated with an incident or security activity.
+
+Potential fields:
+
+* risk_score_id
+* incident_id
+* score
+* risk_level
+* severity_factor
+* correlation_factor
+* asset_factor
+* behavioral_factor
+* evidence_factor
+* mitre_factor
+* calculated_at
+
+Possible risk levels:
+
+* low
+* medium
+* high
+* critical
+
+Risk scoring should remain explainable by retaining the factors that contributed to the final score.
+
+---
+
+# 19. Investigation
+
+An Investigation represents an analyst-driven security investigation.
+
+Potential fields:
+
+* investigation_id
+* incident_id
+* analyst_id
+* investigation_type
+* status
+* hypothesis
+* findings
+* started_at
+* completed_at
+* created_at
+* updated_at
+
+Possible investigation types:
+
+* incident investigation
+* host investigation
+* threat hunting
+* alert investigation
+* AI-assisted investigation
+
+An investigation may contain analyst notes, evidence references, and AI-assisted analysis.
+
+---
+
+# 20. Threat Intelligence
+
+A Threat Intelligence record represents contextual intelligence associated with an observable or security event.
+
+Potential fields:
+
+* intelligence_id
+* indicator_type
+* indicator_value
+* source
+* reputation
+* confidence
+* threat_type
+* first_seen
+* last_seen
+* related_event
+* related_incident
+* retrieved_at
+
+Possible indicator types include:
+
+* IP address
+* domain
+* URL
+* file hash
+* hostname
+
+Threat intelligence is intended to enrich investigations rather than replace SentinelX's internal detection and correlation logic.
+
+---
+
+# 21. Response Action
+
+A Response Action represents an analyst-reviewed response recommendation or documented response activity.
+
+Potential fields:
+
+* response_action_id
+* incident_id
+* investigation_id
+* action_type
+* recommendation
+* rationale
+* priority
+* status
+* analyst_id
+* created_at
+* completed_at
+
+Possible action types:
+
+* investigate
+* contain
+* isolate
+* block
+* collect evidence
+* reset credentials
+* remediate
+* monitor
+
+SentinelX will primarily provide evidence-based recommendations. High-impact actions should remain under authorized analyst control.
+
+---
+
+# 22. Core Entity Relationship Model
+
+The expanded SentinelX data model follows this conceptual relationship:
+
+```text
+                         USER
+                          |
+                          |
+                    +-----+------+
+                    |            |
+                    v            v
+               INVESTIGATION   AUDIT RECORD
+                    |
+                    |
+                    v
+SECURITY EVENT ---> DETECTION FINDING ---> ALERT
+      |                   |
+      |                   |
+      v                   v
+ INCIDENT EVENT       CORRELATION
+      |                   |
+      +---------+---------+
+                |
+                v
+             INCIDENT
+                |
+       +--------+---------+----------------+
+       |        |         |                |
+       v        v         v                v
+     HOST     RISK      MITRE          EVIDENCE
+              SCORE     TECHNIQUE
+                |          |
+                +----+-----+
+                     |
+                     v
+               ATTACK STORY
+                     |
+                     v
+              AI INVESTIGATION
+                     |
+                     v
+             RESPONSE ACTION
+
+THREAT INTELLIGENCE
+        |
+        +------> EVENT / ALERT / INCIDENT
+```
+
+---
+
+# 23. Key Relationships
+
+### User → Investigation
+
+One analyst may perform multiple investigations.
+
+### Host → Security Event
+
+A host may generate many security events.
+
+### Security Event → Detection Finding
+
+A security event may produce zero or more detection findings.
+
+### Detection Finding → Alert
+
+A detection finding may generate an analyst-facing alert.
+
+### Security Event → Incident Event
+
+Security events may be associated with incidents through the Incident Event relationship.
+
+### Incident → Incident Event
+
+An incident may contain multiple related events.
+
+### Incident → Risk Score
+
+An incident may have one or more risk assessments over its lifecycle.
+
+### Incident → MITRE Technique
+
+An incident may be associated with multiple MITRE ATT&CK techniques.
+
+### Incident → Evidence
+
+An incident may contain multiple evidence records.
+
+### Incident → Investigation
+
+An incident may have multiple investigation activities.
+
+### Incident → Response Action
+
+An incident may produce multiple analyst-reviewed response recommendations or actions.
+
+### Incident → Attack Story
+
+An incident may have an associated reconstructed attack story.
+
+### Investigation → AI Investigation
+
+An analyst investigation may contain one or more AI-assisted analysis sessions.
+
+### Threat Intelligence → Event / Alert / Incident
+
+Threat intelligence can enrich events, alerts, or incidents when matching indicators are identified.
+
+---
+
+# 24. Data Integrity Principles
+
+SentinelX will follow these principles:
+
+1. Original raw telemetry should be retained for traceability.
+2. Security events should not be modified after ingestion without an audit trail.
+3. Detection findings should reference supporting events.
+4. Incidents should preserve relationships to their underlying events.
+5. Risk scores should retain their contributing factors.
+6. MITRE mappings should reference supporting evidence.
+7. AI investigations should preserve the evidence context used for analysis.
+8. Analyst actions should be auditable.
+9. Security-sensitive user information should be protected.
+10. Observed evidence and generated interpretation should remain distinguishable.
+
+---
+
+# 25. Database Design Objective
+
+The database is designed to support the complete SentinelX investigation lifecycle:
+
+**Telemetry → Normalization → Detection → Alert → Correlation → Incident → Evidence → Risk Assessment → MITRE Analysis → Investigation → AI Analysis → Response Support**
+
+The relational structure should preserve traceability between each stage so that analysts can move from a high-level incident back to the original security telemetry that supports the conclusion.
+
+---
+
+# 26. Future Extensibility
+
+The data model is intentionally modular and can be extended in future versions with entities such as:
+
+* Detection Rules
+* Asset Inventory
+* Security Cases
+* Playbooks
+* Vulnerabilities
+* Threat Actors
+* Campaigns
+* External Threat Intelligence Sources
+
+These entities are not required for the initial implementation but can be integrated without redesigning the complete core investigation model.

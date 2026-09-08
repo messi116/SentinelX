@@ -87,3 +87,90 @@ processing pipeline.
                 +----------------------+
                 | SOC Analyst Frontend |
                 +----------------------+
+
+                # 3. Technology Stack
+
+## Frontend
+
+- React
+- Tailwind CSS
+- SOC analyst dashboard and investigation interface
+
+## Backend
+
+- FastAPI
+- Python
+- REST API layer for SentinelX services
+
+## Database
+
+- PostgreSQL
+- Persistent storage for telemetry, alerts, incidents,
+  investigations, risk scores, MITRE mappings, and response actions
+
+## SOC Telemetry
+
+- Wazuh for endpoint security telemetry
+- Suricata for network intrusion detection telemetry
+
+## AI Layer
+
+SentinelX uses a provider-independent AI architecture.
+
+The AI Investigation Engine communicates through an abstraction
+layer rather than being tightly coupled to a single AI provider.
+This allows different AI providers or locally hosted models to be
+integrated without changing the core SentinelX architecture.
+
+---
+
+# 4. Telemetry Sources
+
+### Endpoint Security
+
+Wazuh agents collect endpoint security telemetry and forward
+security events to the SentinelX ingestion pipeline.
+
+### Network Security
+
+Suricata analyzes network traffic and produces network security
+events that are processed by SentinelX.
+
+### Unified Processing
+
+Wazuh and Suricata events are normalized into a common telemetry
+representation before entering the detection and correlation
+pipeline.
+
+---
+
+# 5. Architecture Principles
+
+### Modular Design
+
+Major SentinelX capabilities are separated into independent
+processing components.
+
+### Evidence-First AI
+
+AI analysis operates on structured security evidence generated
+by the detection, correlation, risk, MITRE, and investigation
+pipeline.
+
+### Provider Independence
+
+The AI layer is abstracted from any specific AI provider,
+allowing providers or models to be replaced without redesigning
+the SentinelX platform.
+
+### Separation of Concerns
+
+Telemetry collection, detection, correlation, risk assessment,
+MITRE mapping, AI investigation, persistence, and visualization
+are logically separated.
+
+### Extensibility
+
+New telemetry sources, detection rules, intelligence sources,
+AI providers, and response capabilities can be integrated
+without restructuring the entire system.
