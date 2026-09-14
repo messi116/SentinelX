@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.api.alerts import router as alerts_router
+from app.api.auth import router as auth_router
 
 from app.api.wazuh import router as wazuh_router
 from app.api.incidents import router as incidents_router
@@ -21,7 +22,7 @@ app.include_router(alerts_router)
 app.include_router(incidents_router)
 app.include_router(hosts_router)
 app.include_router(users_router)
-
+app.include_router(auth_router)
 
 @app.get("/")
 def root():

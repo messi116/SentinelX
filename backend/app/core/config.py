@@ -19,6 +19,10 @@ class Settings(BaseSettings):
     WAZUH_INDEXER_USERNAME: str | None = None
     WAZUH_INDEXER_PASSWORD: str | None = None
 
+    JWT_SECRET_KEY: str
+    JWT_ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore",
