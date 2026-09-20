@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-09-20T11:16:58.244616-0400",
+  "flow_id": 783501271730494,
+  "in_iface": "eth0",
+  "event_type": "mdns",
+  "src_ip": "192.168.18.204",
+  "src_port": 5353,
+  "dest_ip": "224.0.0.251",
+  "dest_port": 5353,
+  "proto": "UDP",
+  "ip_v": 4,
+  "pkt_src": "wire/pcap",
+  "mdns": {
+    "type": "request",
+    "id": 0,
+    "opcode": 0,
+    "rcode": 0,
+    "queries": [
+      {
+        "rrname": "_companion-link._tcp.local",
+        "rrtype": "ptr"
+      },
+      {
+        "rrname": "_rdlink._tcp.local",
+        "rrtype": "ptr"
+      }
+    ]
+  }
+}
