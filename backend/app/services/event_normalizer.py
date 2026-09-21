@@ -118,3 +118,39 @@ class EventNormalizer:
             message=message,
             raw_data=alert,
         )
+
+    @staticmethod
+    def normalize_suricata_event(
+        event: dict[str, Any],
+    ) -> NormalizedEvent:
+        timestamp = EventNormalizer._parse_timestamp(event)
+
+        event_type = event.get("event_type") or "suricata_event"
+
+        source_ip = event.get("src_ip")
+        destination_ip = event.get("dest_ip")
+
+        source_port = event.get("src_port")
+        destination_port = event.get("dest_port")
+
+        interface = event.get("in_iface")
+
+        protocol = event.get("proto")
+
+        message = (
+            f"Suricata {event_type} event"
+            + (f" over {protocol}" if protocol else "")
+        )
+
+        return NormalizedEvent(
+            source="suricata",
+            event_type=str(event_type),
+            timestamp=timestamp,
+            host=interface,
+            source_ip=source_ip,
+            destination_ip=destination_ip,
+            source_port=source_port,
+            destination_port=destination_port,
+            message=message,
+            raw_data=event,
+        )
