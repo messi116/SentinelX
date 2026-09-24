@@ -12,7 +12,10 @@ class DetectionEngine:
         event_type = event.event_type.lower()
 
         for rule in DETECTION_RULES:
-            for pattern in rule["event_types"]:
+            conditions = rule.get("conditions", {})
+            event_types = conditions.get("event_types", [])
+
+            for pattern in event_types:
                 if pattern.lower() in event_type:
                     findings.append(
                         {
@@ -23,6 +26,8 @@ class DetectionEngine:
                                 event.severity or 0,
                                 rule["severity"],
                             ),
+                            "mitre_technique": rule.get("mitre_technique"),
+                            "response": rule.get("response"),
                             "event": event,
                         }
                     )
