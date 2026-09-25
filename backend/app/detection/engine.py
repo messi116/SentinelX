@@ -3,7 +3,7 @@ from app.schemas.event import NormalizedEvent
 
 
 class DetectionEngine:
-    """Evaluate normalized telemetry against deterministic detection rules."""
+    """Evaluate normalized telemetry against deterministic single-event rules."""
 
     @staticmethod
     def detect(event: NormalizedEvent) -> list[dict]:
@@ -12,6 +12,9 @@ class DetectionEngine:
         event_type = event.event_type.lower()
 
         for rule in DETECTION_RULES:
+            if rule.get("detection_mode") == "sequence":
+                continue
+
             conditions = rule.get("conditions", {})
             event_types = conditions.get("event_types", [])
 
